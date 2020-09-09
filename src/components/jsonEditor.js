@@ -4,7 +4,7 @@ import { Button } from 'react-bootstrap';
 
 function JSONEditor(props){
     const editor = (
-        <div><textarea style={{width: '100%', height: '300px'}} value={props.json} onChange={props.onChange} />
+        <div><textarea className="text-area" value={props.json} onChange={props.onChange} />
         <Button onClick={props.onClick}>Generate Chart</Button>
         </div>
     )
