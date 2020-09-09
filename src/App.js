@@ -14,30 +14,23 @@ function App() {
     SPAN: 'span',
     DATA: 'data'
   }
-  const initialJSON = '{"type": "start", "timestamp": 1519780251293, "select": ["min_response_time", "max_response_time"], "group": ["os", "browser"]}'
+  const initialJSON = `{"type": "start", "timestamp": 1519780251293, "select": ["min_response_time", "max_response_time"], "group": ["os", "browser"]}
+  {"type": "data", "timestamp": 1519780251000, "os": "linux", "browser": "chrome", "min_response_time": 0.1, "max_response_time": 1.3}
+  {"type": "data", "timestamp": 1519780252000, "os": "linux", "browser": "chrome", "min_response_time": 0.3, "max_response_time": 1.5}
+  {"type": "data", "timestamp": 1519780251000, "os": "linux", "browser": "firefox", "min_response_time": 0.1, "max_response_time": 1.1}
+  {"type": "data", "timestamp": 1519780252000, "os": "linux", "browser": "firefox", "min_response_time": 0.2, "max_response_time": 1.7}
+  {"type": "data", "timestamp": 1519780251000, "os": "mac", "browser": "firefox", "min_response_time": 0.4, "max_response_time": 1.3}
+  {"type": "data", "timestamp": 1519780252000, "os": "mac", "browser": "firefox", "min_response_time": 0.5, "max_response_time": 1.9}
+  {"type": "data", "timestamp": 1519780251000, "os": "mac", "browser": "chrome", "min_response_time": 0.6, "max_response_time": 1.8}
+  {"type": "data", "timestamp": 1519780252000, "os": "mac", "browser": "chrome", "min_response_time": 0.9, "max_response_time": 2.1}`
   const initialData = React.useMemo(
     () => [
       
-      {
-          label: 't1',
-          data:[
-              [1519862400000, 3], [1519862460000, 2], [1519862500000, 4], [1519862560000, 3]
-            ]
-      },
-      {
-        label: 't2',
-        data:[
-            [1519862400000, 4], [1519862460000, 2], [1519862500000, 4], [1519862560000, 3]
-          ]
-      }
-    ],
+     ],
     []
   )
   const [json, setJson] = useState(initialJSON);
   const [data, setData] = useState(initialData);
-  const [group, setGroup] = useState('');
-  const [select, setSelect] = useState('');
-  const [plotInterval, setPlotInterval] = useState('');
 
   function setNewJSON(event){
     console.log(event.target.value)
@@ -47,6 +40,7 @@ function App() {
 
   function readJSON(){
     let jsonLines = json.split('\n');
+    let stopPlot = false;
     let groups = [];
     let selects = [];
     let chartCoords = [];
@@ -59,21 +53,29 @@ function App() {
         case chartTypeEnum.SPAN:
           break;
         case chartTypeEnum.START:
-          setSelect(jsonLine.select);
-          setGroup(jsonLine.group);
+          stopPlot = false;
           groups = jsonLine.group;
           selects = jsonLine.select;
           break;
         case chartTypeEnum.STOP:
-          setData([])
+          stopPlot = true;
+          groups = [];
+          selects = [];
+          chartCoords = [];
           break;
         default:
           console.log('type not found!')
       }
     }
+    if(stopPlot){
+      setData([])
+    }else{
+      plotChart(chartCoords, groups);
+    }
   }
 
   function sortChartGroups(jsonLine, groups, selects, chartCoords){
+    let createNewEntry = true;
     if(chartCoords.length === 0){
       chartCoords.push({
         [groups[0]]: jsonLine[groups[0]],
@@ -84,26 +86,46 @@ function App() {
       })
     }else{
       for(let coord of chartCoords){
-        if(coord.hasOwnProperty([groups[0]])){
-          if(coord.hasOwnProperty([groups[1]])){
+        createNewEntry = true;
+        if(coord.hasOwnProperty([groups[0]]) && coord[groups[0]] === jsonLine[groups[0]]){
+          if(coord.hasOwnProperty([groups[1]]) && coord[groups[1]] === jsonLine[groups[1]]){
             coord['timestamps'].push(jsonLine.timestamp);
             coord[selects[0]].push(jsonLine[selects[0]]);
             coord[selects[1]].push(jsonLine[selects[1]]);
+            createNewEntry = false
+            break;
           }
         }
       }
+      if(createNewEntry){
+        chartCoords.push({
+          [groups[0]]: jsonLine[groups[0]],
+          [groups[1]]: jsonLine[groups[1]],
+          'timestamps': [jsonLine['timestamp']],
+          [selects[0]]: [jsonLine[selects[0]]],
+          [selects[1]]: [jsonLine[selects[1]]]
+        })
+      }
     }
-    plotChart(chartCoords, groups);
+
+
   }
 
   function plotChart(chartCoords, groups){
-    setData([{
-      label: groups[0],
-      data:[
-          [chartCoords[0].timestamps[0], chartCoords[0].min_response_time[0]], [chartCoords[0].timestamps[1], chartCoords[0].min_response_time[1]]
-        ]
-    },
-    ])
+    let chartData = [];
+    for(let coord of chartCoords){
+      chartData.push(
+        {label: `os ${coord.os} in browser ${coord.browser} min_response_time`,
+      data: [
+        [coord.timestamps[0], coord.min_response_time[0]], [coord.timestamps[1], coord.min_response_time[1]]
+      ]},
+      {label: `os ${coord.os} in browser ${coord.browser} max_response_time`,
+      data: [
+        [coord.timestamps[0], coord.max_response_time[0]], [coord.timestamps[1], coord.max_response_time[1]]
+      ]}
+      )
+    }
+    setData(chartData);
   }
 
   return (
