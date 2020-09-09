@@ -22,20 +22,16 @@
 
 .nav-bar {
   text-align: center;
-  background-color: white;
+  background-color: #dddee1;
   margin-bottom: 56px !important;
+}
+
+.footer {
+  background-color: #dddee1;
 }
 
 .content-wrap {
   margin-top: 56px;
-}
-
-.footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-color: #cccccc;
 }
 
 .text-area {
