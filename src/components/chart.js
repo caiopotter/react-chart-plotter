@@ -4,13 +4,7 @@ import { Chart } from 'react-charts'
 function MyChart(props) {
   const data = props.data
  
-  const axes = React.useMemo(
-    () => [
-      { primary: true, type: 'time', position: 'bottom' },
-      { type: 'linear', position: 'left' }
-    ],
-    []
-  )
+  const axes = props.axes
 
   const cursors = React.useMemo(
       () => [

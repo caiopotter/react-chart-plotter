@@ -23,27 +23,24 @@ function App() {
   {"type": "data", "timestamp": 1519780252000, "os": "mac", "browser": "firefox", "min_response_time": 0.5, "max_response_time": 1.9}
   {"type": "data", "timestamp": 1519780251000, "os": "mac", "browser": "chrome", "min_response_time": 0.6, "max_response_time": 1.8}
   {"type": "data", "timestamp": 1519780252000, "os": "mac", "browser": "chrome", "min_response_time": 0.9, "max_response_time": 2.1}`
-  const initialData = React.useMemo(
-    () => [
-      
-     ],
-    []
-  )
+  const initialData = React.useMemo(() => [],[])
+  const initialAxes = React.useMemo(() => [{ primary: true, type: 'time', position: 'bottom'},{ type: 'linear', position: 'left' }],[]);
   const [json, setJson] = useState(initialJSON);
   const [data, setData] = useState(initialData);
+  const [axes, setAxes] = useState(initialAxes);
 
   function setNewJSON(event){
-    console.log(event.target.value)
     setJson(event.target.value)
-    console.log('JSON state saved')
   }
 
   function readJSON(){
     let jsonLines = json.split('\n');
-    let stopPlot = false;
+    let stopPlot = true;
     let groups = [];
     let selects = [];
     let chartCoords = [];
+    let defaultAxes = [{ primary: true, type: 'time', position: 'bottom'},{ type: 'linear', position: 'left' }];
+    let axes = defaultAxes;
     let jsonLine;
     for(let line of jsonLines){
       try{
@@ -58,11 +55,14 @@ function App() {
           }
           break;
         case chartTypeEnum.SPAN:
-          if(!stopPlot){}
+          if(!stopPlot){
+            axes = defineChartLimits(jsonLine)
+          }
           break;
         case chartTypeEnum.START:
           stopPlot = false;
           chartCoords = [];
+          axes = defaultAxes;
           groups = jsonLine.group;
           selects = jsonLine.select;
           break;
@@ -73,7 +73,17 @@ function App() {
           console.log('type not found!')
       }
     }
+    setChartLimits(axes);
     plotChart(chartCoords, groups);
+  }
+
+  function defineChartLimits(jsonLine){
+    let axes = [{ primary: true, type: 'time', position: 'bottom', hardMin: jsonLine.begin, hardMax: jsonLine.end},{ type: 'linear', position: 'left' }]
+    return axes;
+  }
+
+  function setChartLimits(axes){
+    setAxes(axes);
   }
 
   function sortChartGroups(jsonLine, groups, selects, chartCoords){
@@ -109,8 +119,6 @@ function App() {
         })
       }
     }
-
-
   }
 
   function plotChart(chartCoords, groups){
@@ -135,7 +143,7 @@ function App() {
       <ChallengeNavBar></ChallengeNavBar>
       <div className="content-wrap">
         <JSONEditor json={json} onChange={setNewJSON} onClick={readJSON}></JSONEditor>
-        <Chart data={data} json={json}></Chart>
+        <Chart data={data} json={json} axes={axes}></Chart>
       </div>
       <div>
         {/* <Footer></Footer> */}
