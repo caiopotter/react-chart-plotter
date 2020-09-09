@@ -1,5 +1,4 @@
 import React from 'react';
-import JSONInput from 'react-json-editor-ajrm';
 import { Button } from 'react-bootstrap';
 
 
