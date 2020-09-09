@@ -48,30 +48,27 @@ function App() {
       let jsonLine = JSON.parse(line);
       switch (jsonLine.type){
         case chartTypeEnum.DATA:
-          sortChartGroups(jsonLine, groups, selects, chartCoords)
+          if(!stopPlot){
+            sortChartGroups(jsonLine, groups, selects, chartCoords)
+          }
           break;
         case chartTypeEnum.SPAN:
+          if(!stopPlot){}
           break;
         case chartTypeEnum.START:
           stopPlot = false;
+          chartCoords = [];
           groups = jsonLine.group;
           selects = jsonLine.select;
           break;
         case chartTypeEnum.STOP:
           stopPlot = true;
-          groups = [];
-          selects = [];
-          chartCoords = [];
           break;
         default:
           console.log('type not found!')
       }
     }
-    if(stopPlot){
-      setData([])
-    }else{
-      plotChart(chartCoords, groups);
-    }
+    plotChart(chartCoords, groups);
   }
 
   function sortChartGroups(jsonLine, groups, selects, chartCoords){
