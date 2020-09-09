@@ -44,8 +44,13 @@ function App() {
     let groups = [];
     let selects = [];
     let chartCoords = [];
+    let jsonLine;
     for(let line of jsonLines){
-      let jsonLine = JSON.parse(line);
+      try{
+        jsonLine = JSON.parse(line);
+      }catch(e){
+        continue;
+      }
       switch (jsonLine.type){
         case chartTypeEnum.DATA:
           if(!stopPlot){
