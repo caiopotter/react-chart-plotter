@@ -3,7 +3,6 @@ import { Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import Chart from './components/chart';
-//import Footer from './components/footer';
 import JSONEditor from './components/jsonEditor';
 import ChallengeNavBar from './components/navBar';
 
@@ -144,9 +143,6 @@ function App() {
       <div className="content-wrap">
         <JSONEditor json={json} onChange={setNewJSON} onClick={readJSON}></JSONEditor>
         <Chart data={data} json={json} axes={axes}></Chart>
-      </div>
-      <div>
-        {/* <Footer></Footer> */}
       </div>
     </Container>
   );
