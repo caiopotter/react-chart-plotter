@@ -4,7 +4,7 @@ import { Navbar } from "react-bootstrap";
 function HeaderNavBar(){
     return (
         <Navbar className="nav-bar" fixed="top">
-            <Navbar.Brand style={{'font-weight': 'bold'}}>Caio's Challenge</Navbar.Brand>
+            <Navbar.Brand style={{'fontWeight': 'bold'}}>Caio's Challenge</Navbar.Brand>
         </Navbar>
     )
 }

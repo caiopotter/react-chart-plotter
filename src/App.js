@@ -73,7 +73,7 @@ function App() {
       }
     }
     setChartLimits(axes);
-    plotChart(chartCoords, groups);
+    plotChart(chartCoords);
   }
 
   function defineChartLimits(jsonLine){
@@ -120,17 +120,17 @@ function App() {
     }
   }
 
-  function plotChart(chartCoords, groups){
+  function plotChart(chartCoords){
     let chartData = [];
     for(let coord of chartCoords){
       chartData.push(
         {label: `os ${coord.os} in browser ${coord.browser} min_response_time`,
       data: [
-        [coord.timestamps[0], coord.min_response_time[0]], [coord.timestamps[1], coord.min_response_time[1]]
+        [coord.timestamps[0], coord.min_response_time[0]], [coord.timestamps[coord.timestamps.length -1], coord.min_response_time[coord.min_response_time.length -1]]
       ]},
       {label: `os ${coord.os} in browser ${coord.browser} max_response_time`,
       data: [
-        [coord.timestamps[0], coord.max_response_time[0]], [coord.timestamps[1], coord.max_response_time[1]]
+        [coord.timestamps[0], coord.max_response_time[0]], [coord.timestamps[coord.timestamps.length -1], coord.max_response_time[coord.max_response_time.length -1]]
       ]}
       )
     }
