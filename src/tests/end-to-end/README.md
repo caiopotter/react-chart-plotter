@@ -1,0 +1,1 @@
+End-to-end Tests, using the software Katalon. To open the cases, select the IntelieChartTest folder on Katalon software.

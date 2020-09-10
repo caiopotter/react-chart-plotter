@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>TestWithoutStart</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>8516d6b8-f8e8-41b7-b06f-1b32da3fbc70</testCaseGuid>
+   <variable>
+      <defaultValue>''</defaultValue>
+      <description></description>
+      <id>626a7e0e-9269-43f4-a70d-10a79f0616f5</id>
+      <masked>false</masked>
+      <name>variable</name>
+   </variable>
+</TestCaseEntity>
